@@ -28,7 +28,9 @@ body {
 	font-family: 'Lato', serif;
 }
 </style>
-
+<script type="text/javascript">
+  $("table").addClass("table")
+</script>
 <g:layoutHead />
 </head>
 <body>

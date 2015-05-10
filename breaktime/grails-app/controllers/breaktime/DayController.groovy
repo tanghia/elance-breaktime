@@ -8,96 +8,112 @@ import grails.transaction.Transactional
 @Transactional(readOnly = true)
 class DayController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+	static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond Day.list(params), model:[dayInstanceCount: Day.count()]
-    }
+	def index(Integer max) {
+		 redirect controller:'breakTime',action:'create'
+	}
 
-    def show(Day dayInstance) {
-        redirect controller:'breakTime',action:'create'
-    }
+	def show(Day dayInstance) {
+		if(params.from.equals("breaktime")){
+			respond dayInstance
+		}else{
+		    redirect controller:'breakTime',action:'create'
+		}
+	}
 
-    def create() {
-        respond new Day(params)
-    }
 
-    @Transactional
-    def save(Day dayInstance) {
-        if (dayInstance == null) {
-            notFound()
-            return
-        }
+	def create() {
+		respond new Day(params)
+	}
 
-        if (dayInstance.hasErrors()) {
-            respond dayInstance.errors, view:'create'
-            return
-        }
+	@Transactional
+	def save(Day dayInstance) {
+		if (dayInstance == null) {
+			notFound()
+			return
+		}
 
-        dayInstance.save flush:true
+		if (dayInstance.hasErrors()) {
+			respond dayInstance.errors, view:'create'
+			return
+		}
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'day.label', default: 'Day'), dayInstance.id])
-                redirect dayInstance
-            }
-            '*' { respond dayInstance, [status: CREATED] }
-        }
-    }
+		dayInstance.save flush:true
 
-    def edit(Day dayInstance) {
-        respond dayInstance
-    }
+		request.withFormat {
+			form multipartForm {
+				flash.message = message(code: 'default.created.message', args: [
+					message(code: 'day.label', default: 'Day'),
+					dayInstance.id
+				])
+				redirect dayInstance
+			}
+			'*' { respond dayInstance, [status: CREATED] }
+		}
+	}
 
-    @Transactional
-    def update(Day dayInstance) {
-        if (dayInstance == null) {
-            notFound()
-            return
-        }
+	def edit(Day dayInstance) {
+		respond dayInstance
+	}
 
-        if (dayInstance.hasErrors()) {
-            respond dayInstance.errors, view:'edit'
-            return
-        }
+	@Transactional
+	def update(Day dayInstance) {
+		if (dayInstance == null) {
+			notFound()
+			return
+		}
 
-        dayInstance.save flush:true
+		if (dayInstance.hasErrors()) {
+			respond dayInstance.errors, view:'edit'
+			return
+		}
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'Day.label', default: 'Day'), dayInstance.id])
-                redirect dayInstance
-            }
-            '*'{ respond dayInstance, [status: OK] }
-        }
-    }
-    @Transactional
-    def delete(Day dayInstance) {
+		dayInstance.save flush:true
 
-        if (dayInstance == null) {
-            notFound()
-            return
-        }
+		request.withFormat {
+			form multipartForm {
+				flash.message = message(code: 'default.updated.message', args: [
+					message(code: 'Day.label', default: 'Day'),
+					dayInstance.id
+				])
+				redirect dayInstance
+			}
+			'*'{ respond dayInstance, [status: OK] }
+		}
+	}
+	@Transactional
+	def delete(Day dayInstance) {
 
-        dayInstance.delete flush:true
+		if (dayInstance == null) {
+			notFound()
+			return
+		}
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'Day.label', default: 'Day'), dayInstance.id])
-                redirect action:"index", method:"GET"
-            }
-            '*'{ render status: NO_CONTENT }
-        }
-    }
+		dayInstance.delete flush:true
 
-    protected void notFound() {
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'day.label', default: 'Day'), params.id])
-                redirect action: "index", method: "GET"
-            }
-            '*'{ render status: NOT_FOUND }
-        }
-    }
+		request.withFormat {
+			form multipartForm {
+				flash.message = message(code: 'default.deleted.message', args: [
+					message(code: 'Day.label', default: 'Day'),
+					dayInstance.id
+				])
+				redirect action:"index", method:"GET"
+			}
+			'*'{ render status: NO_CONTENT }
+		}
+	}
+
+	protected void notFound() {
+		request.withFormat {
+			form multipartForm {
+				flash.message = message(code: 'default.not.found.message', args: [
+					message(code: 'day.label', default: 'Day'),
+					params.id
+				])
+				redirect action: "index", method: "GET"
+			}
+			'*'{ render status: NOT_FOUND }
+		}
+	}
 }

@@ -36,13 +36,15 @@ class UserController {
         }
 
         userInstance.save flush:true
-
+		def userRole = Role.findByAuthority('ROLE_USER')
+		new UserRole(user: userInstance, role:userRole).save(flush:true)
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'user.label', default: 'User'), userInstance.id])
-                redirect userInstance
+                redirect controller:"login"
             }
-            '*' { respond userInstance, [status: CREATED] }
+            //'*' { respond userInstance, [status: CREATED] }
+			redirect controller:"login"
         }
     }
 

@@ -30,11 +30,14 @@ class BootStrap {
 				'/',
 				'/index',
 				'/index.gsp',
+				'/**/search/**',
+				'/**/index/**',
 				'/**/favicon.ico',
 				'/**/js/**',
 				'/**/css/**',
 				'/**/images/**',
 				'/**/fonts/**',
+				'/**/assets/**',
 				'/login',
 				'/login.*',
 				'/login/*',
@@ -44,7 +47,8 @@ class BootStrap {
 			]) {
 				new RequestMap(url: url, configAttribute: 'permitAll').save()
 			}
-			new RequestMap(url: '/user/**', configAttribute: 'ROLE_ADMIN,ROLE_USER').save()
+			/*new RequestMap(url: '/user/**', configAttribute: 'ROLE_ADMIN,ROLE_USER').save()*/
+			new RequestMap(url: '/user/**', configAttribute: 'permitAll').save()
 			new RequestMap(url: '/breaktime/**', configAttribute: 'ROLE_ADMIN,ROLE_USER').save()
 			new RequestMap(url: '/day/**', configAttribute: 'ROLE_ADMIN,ROLE_USER').save()
 			new RequestMap(url: '/image/**', configAttribute: 'ROLE_ADMIN').save()

@@ -8,19 +8,16 @@
 		<title><g:message code="default.list.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<a href="#list-image" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div class="nav" role="navigation">
-			<ul>
-				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
-			</ul>
+		<div class="row">
+				<a class="btn btn-info" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
+				<g:link class="btn btn-info" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link>
 		</div>
 		<div id="list-image" class="content scaffold-list" role="main">
-			<h1><g:message code="default.list.label" args="[entityName]" /></h1>
+			
 			<g:if test="${flash.message}">
 				<div class="message" role="status">${flash.message}</div>
 			</g:if>
-			<table>
+			<table class="table">
 			<thead>
 					<tr>
 					
@@ -42,7 +39,9 @@
 					
 						<td><g:link action="show" id="${imageInstance.id}">${fieldValue(bean: imageInstance, field: "name")}</g:link></td>
 					
-						<td>${fieldValue(bean: imageInstance, field: "image")}</td>
+						<td>
+						  <img height="150" width="200" alt="" src="data:image/png;base64,${imageInstance.image.encodeBase64()}">
+						</td>
 					
 						<td>${fieldValue(bean: imageInstance, field: "title")}</td>
 					

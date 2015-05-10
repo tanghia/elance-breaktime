@@ -11,4 +11,10 @@ class BreakTime {
 		time blank:false, nullable:false
 		restTime blank:false, nullable:false, min:1, max:30
     }
+	
+	def beforeInsert(){
+		time.date=day.day.getDate()
+		time.month=day.day.getMonth()
+		time.year=day.day.getYear()
+	}
 }

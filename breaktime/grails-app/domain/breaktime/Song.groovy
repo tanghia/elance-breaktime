@@ -13,5 +13,8 @@ class Song {
 	static mapping={
 		status defaultValue:true
 	}
-
+	@Override
+	public String toString() {
+		return name;
+	}
 }

@@ -134,21 +134,3 @@ grails.plugin.springsecurity.securityConfigType = 'Requestmap'
 //	'/**/images/**':                  ['permitAll'],
 //	'/**/favicon.ico':                ['permitAll']
 //]
-
-
-
-// Added by the Spring Security Core plugin:
-grails.plugin.springsecurity.userLookup.userDomainClassName = 'User.Role'
-grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'User.RoleRequestMap'
-grails.plugin.springsecurity.authority.className = 'User.RequestMap'
-grails.plugin.springsecurity.controllerAnnotations.staticRules = [
-	'/':                              ['permitAll'],
-	'/index':                         ['permitAll'],
-	'/index.gsp':                     ['permitAll'],
-	'/assets/**':                     ['permitAll'],
-	'/**/js/**':                      ['permitAll'],
-	'/**/css/**':                     ['permitAll'],
-	'/**/images/**':                  ['permitAll'],
-	'/**/favicon.ico':                ['permitAll']
-]
-

@@ -10,15 +10,23 @@
 
 </head>
 <body>
-
 	<div class="row">
+		<p class="text-center">
+			Your total working time:
+			${workingTime}
+			hours
+		</p>
+		<p class="text-center">
+			Your total rest time:
+			${restTime}
+			hours
+		</p>
+	</div>
+	<div>
 		<div id="create-breakTime"
-			class="content scaffold-create col-lg-4 col-md-4 col-sm-4 col-xs-12"
+			class="content scaffold-create col-lg-5 col-md-5 col-sm-5 col-xs-12"
 			role="main">
-			<div id="create-day" class="content scaffold-create row" role="main">
-				<h1>
-					<g:message code="default.create.label" args="[entityName]" />
-				</h1>
+			<div class="row">
 				<g:if test="${flash.message}">
 					<div class="message" role="status">
 						${flash.message}
@@ -33,20 +41,26 @@
 						</g:eachError>
 					</ul>
 				</g:hasErrors>
-				<g:form controller="day" url="[resource:dayInstance, action:'save']">
+				<g:form controller="day" url="[resource:dayInstance, action:'save']"
+					role="form" class="row">
 					<fieldset class="form">
+						<legend>Create Day</legend>
 						<g:render template="form_create_day" />
 					</fieldset>
 					<fieldset class="buttons">
-						<g:submitButton name="create" class="save"
-							value="${message(code: 'default.button.create.label', default: 'Create')}" />
+						<div class="row">
+							<div
+								class="col-lg-10 col-md-10 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-2">
+								<g:submitButton name="create" class="save btn btn-info"
+									params="[from:'breaktime']"
+									value="${message(code: 'default.button.create.label', default: 'Create')}" />
+							</div>
+						</div>
+
 					</fieldset>
 				</g:form>
 			</div>
 			<div class="row">
-				<h1>
-					<g:message code="default.create.label" args="[entityName]" />
-				</h1>
 				<g:if test="${flash.message}">
 					<div class="message" role="status">
 						${flash.message}
@@ -63,16 +77,23 @@
 				</g:hasErrors>
 				<g:form url="[resource:breakTimeInstance, action:'save']">
 					<fieldset class="form">
+						<legend>Create time to break</legend>
 						<g:render template="form" />
 					</fieldset>
 					<fieldset class="buttons">
-						<g:submitButton name="create" class="save"
-							value="${message(code: 'default.button.create.label', default: 'Create')}" />
+						<div class="row">
+							<div
+								class="col-lg-10 col-md-10 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-2">
+								<g:submitButton params="[from:'breaktime']" name="create"
+									class="save btn btn-info"
+									value="${message(code: 'default.button.create.label', default: 'Create')}" />
+							</div>
+						</div>
 					</fieldset>
 				</g:form>
 			</div>
 		</div>
-		<div id="list-day" class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+		<div id="list-day" class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
 			<g:if test="${flash.message}">
 				<div class="message" role="status">
 					${flash.message}
@@ -93,6 +114,7 @@
 
 						<g:sortableColumn property="status"
 							title="${message(code: 'day.status.label', default: 'Status')}" />
+						<th><span>Details</span></th>
 
 					</tr>
 				</thead>
@@ -102,27 +124,13 @@
 
 							<td><g:formatDate format="yyyy-MM-dd"
 									date="${dayInstance.day}" /></td>
-							<td><div class="dropdown">
-									<button class="btn btn-default dropdown-toggle" type="button"
-										id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-										List of Break Times <span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu"
-										aria-labelledby="dropdownMenu1">
-										<li role="presentation"><a role="menuitem" tabindex="-1"
-											href="#">Action</a></li>
-										<li role="presentation"><a role="menuitem" tabindex="-1"
-											href="#">Another action</a></li>
-										<li role="presentation"><a role="menuitem" tabindex="-1"
-											href="#">Something else here</a></li>
-										<li role="presentation"><a role="menuitem" tabindex="-1"
-											href="#">Separated link</a></li>
-									</ul>
-								</div></td>
-							<td><g:formatDate format="HH:mm"
+							<td><g:link controller="breakTime" action="index"
+									params="[dayId:dayInstance.id]">View (${dayInstance.breaktimes.size()})</g:link>
+							</td>
+							<td><g:formatDate format="HH:mm a"
 									date="${dayInstance.startTime}" /></td>
 
-							<td><g:formatDate format="hh:mm"
+							<td><g:formatDate format="hh:mm a"
 									date="${dayInstance.finishTime}" /></td>
 
 							<td><button class="btn btn-success"
@@ -131,6 +139,8 @@
 								<input type="hidden" id="${dayInstance.id}_${k}"
 									value='{"time":"${breaktime.time.toString()}","duration":"${breaktime.restTime}","url":"${HtmlUtils.htmlEscape(breaktime.song.url)}","title":"${breaktime.image.title }","image":"${breaktime.image.image.encodeBase64()}", "description":"${breaktime.image.description}" }' />
 							</g:each>
+							<td><g:link controller="day" action="show"
+									params="[from:'breaktime']" id="${dayInstance.id}">Edit</g:link></td>
 						</tr>
 					</g:each>
 				</tbody>
@@ -142,50 +152,79 @@
 	</div>
 
 	<script type="text/javascript">
+	var myVar
 function timer(id){
-	$("input[id^='"+id+"']").each(function(){
-		
-		    var now=new Date();
+
+	var videoId=""
+    var flag=false
+    $("input[id^='"+id+"']").each(function(){
+
+	        var now=new Date();
 			var data=JSON.parse(this.value)
 			var referenceDate=Date.parse(data.time)
-			console.log(now)
-			console.log(referenceDate)
-			console.log(data.duration)
-			console.log(Date.parse(data.time)+(data.duration)*60*1000)
-			console.log((Date.parse(data.time)+(data.duration)*60*1000) - now)
-			if((Date.parse(data.time)+(data.duration)*60*1000) - now >0 && referenceDate - now <0){
-			$("#url").html(unescape(data.url))
-			$("breaktime_image").attr("src","data:image/png;base64,"+data.image)
+			var youtubeUrl=data.url
+			var patt=/v=/g
+			
+			while(patt.test(youtubeUrl)==true){
+		              videoId=youtubeUrl.substring(patt.lastIndex,youtubeUrl.length)
+			}
+			var embeddedCode="<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/"+videoId+"?enablejsapi=1&amp;rel=0&amp;autoplay=1\" frameborder=\"0\" allowfullscreen></iframe>"
+			
+			if(((referenceDate+(data.duration)*60*1000) - now) >0 && ((referenceDate - now) < 0)){
+				 
+					
+			//alert(decodeURIComponent(data.url))
+			//var string=$.parseHTML(data.url)[0]
+			console.log(videoId)
+			
+			//console.log(string.data)
+			//string=string.substring(1,string.length-2)
+			//console.log(string)
+			//$("#url").html(string.data)
+			$("#url").html(embeddedCode)
+			$("#breaktime_image").attr("src","data:image/png;base64,"+data.image)
 			$("#title").text(data.title)
 			$("#description").text(data.description)
 			//$("#popup").css({"display":"block"})
-			
-    $('#myInput').focus()})
-			
-		}
-
-	)
+			stopPlay()
+			 $('#myModal').modal('show');
+			 clearInterval(myVar) 
+			 setTimeout(function(){ checkTime(id) }, (data.duration)*60*1000);
+			 return
+	     	 }     	 
+	})
 }
+
 function checkTime(id){
-	var myVar = setInterval(function () {timer(id)}, 10000);
+ myVar = setInterval(function () {timer(id)}, 10000);
+}
+
+function stopPlay(state) {
+    // if state == 'hide', hide. Else: show video
+    var div = document.getElementById("url");
+    var iframe = div.getElementsByTagName("iframe")[0].contentWindow;
+    div.style.display = state == 'hide' ? 'none' : '';
+    func = state == 'hide' ? 'pauseVideo' : 'playVideo';
+    iframe.postMessage('{"event":"command","func":"' + func + '","args":""}', '*');
 }
 
 </script>
 	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+	<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog  modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
+					<button type="button" class="close" onclick="stopPlay('hide')" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					<h4 class="modal-title" id="myModalLabel"></h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">
-						<div class="col-lg-6 col-xd-6 col-sm-6 col-xs-12" id="url"></div>
+						<div class="col-lg-6 col-xd-6 col-sm-6 col-xs-12"
+							style="overflow: scroll;" id="url"></div>
 						<div class="col-lg-6 col-xd-6 col-sm-6 col-xs-12">
 							<div class="row">
 								<div class="thumbnail">
@@ -200,7 +239,7 @@ function checkTime(id){
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" onclick="stopPlay('hide')" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>

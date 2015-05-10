@@ -30,7 +30,8 @@ environments {
 	production {
 		dataSource {
 			dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
-			url = "jdbc:mysql://localhost:3306/breaktime?useUnicode=yes&characterEncoding=UTF-8"
+			url = "jdbc:mysql://mysql23538-elance-nghiatt.jelastic.skali.net/breaktime?useUnicode=yes&characterEncoding=UTF-8"
+			password="aPZlDuqj8p"
 			properties {
 				// See http://grails.org/doc/latest/guide/conf.html#dataSource for documentation
 				jmxEnabled = true

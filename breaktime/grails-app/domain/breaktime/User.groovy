@@ -3,7 +3,8 @@ package breaktime
 class User {
 
 	transient springSecurityService
-
+	static hasMany=[days:Day]
+	String fullName
 	String username
 	String password
 	byte[] photo
@@ -19,6 +20,7 @@ class User {
 	static transients = ['springSecurityService']
 
 	static constraints = {
+		fullName blank:false, unique:true, nullable:false
 		username blank: false, unique: true, email:true
 		password blank: false
 		photo blank:true, nullable:true
@@ -30,6 +32,7 @@ class User {
 
 	static mapping = {
 		password column: '`password`'
+		fullName defaultValue:'Mr Breaktime'
 	}
 
 	Set<Role> getAuthorities() {
@@ -51,5 +54,10 @@ class User {
 
 	protected void encodePassword() {
 		password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return fullName
 	}
 }
